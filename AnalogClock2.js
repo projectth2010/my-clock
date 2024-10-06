@@ -1,30 +1,24 @@
-/* eslint-disable prettier/prettier */
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  ImageBackground,
-  Animated,
-  Easing,
-  Text,
-} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, ImageBackground, Animated, Easing, Text } from 'react-native';
 
-const AnalogClock = () => {
+const AnalogClock = ({ theme }) => {
   const [time, setTime] = useState(new Date());
-
+  
   // Refs for animated values of hour, minute, and second hands
   const secondAnim = useRef(new Animated.Value(0)).current;
   const minuteAnim = useRef(new Animated.Value(0)).current;
   const hourAnim = useRef(new Animated.Value(0)).current;
+
+  let clockBackground = theme === 0 ? require('./assets/images/ana-clock1-bg.png') : require('./assets/images/ana-clock2-bg.png');
 
   useEffect(() => {
     // Update time every second
     const interval = setInterval(() => {
       setTime(new Date());
     }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+	
+	return () => clearInterval(interval);
+  }, [clockBackground]);
 
   useEffect(() => {
     const hours = time.getHours();
@@ -56,8 +50,9 @@ const AnalogClock = () => {
     }).start();
   }, [time]);
 
-  // Format time as HH:MM:SS
-  const formatTime = date => {
+
+// Format time as HH:MM:SS
+  const formatTime = (date) => {
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const seconds = date.getSeconds();
@@ -67,16 +62,18 @@ const AnalogClock = () => {
   };
 
   // Format date as Month Day, Year
-  const formatDate = date => {
+  const formatDate = (date) => {
     return date.toDateString();
   };
-
+  
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require('./assets/images/ana-clock1-bg.png')}
-        style={styles.clock}>
-        {/*
+    <View>
+        <ImageBackground
+        
+		source={clockBackground}
+        style={styles.clock}
+        >
+      {/*
       <ImageBackground
         source={require('./assets/images/ana-clock1-bg.png')}
         style={styles.clock}
@@ -131,12 +128,14 @@ const AnalogClock = () => {
         />
         <View style={styles.centerCircle} />
       </ImageBackground>
-
+      
       {/* Display the formatted date and time below the clock */}
       <View style={styles.timeContainer}>
         <Text style={styles.dateText}>{formatDate(time)}</Text>
         <Text style={styles.timeText}>{formatTime(time)}</Text>
       </View>
+      
+      
     </View>
   );
 };
@@ -188,7 +187,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     borderRadius: 5,
   },
-
+  
   timeContainer: {
     marginTop: 20,
     alignItems: 'center',
@@ -202,6 +201,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
+  
 });
 
 export default AnalogClock;

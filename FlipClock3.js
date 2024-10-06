@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Animated } from 'react-native';
 import { Easing } from 'react-native-reanimated';
 
 const FlipClock = () => {
+    const [time, setTime] = useState(new Date());
   const [hours1, setHours1] = useState(new Date().getHours());
   const [minutes1, setMinutes1] = useState(new Date().getMinutes());
   const [seconds1, setSeconds1] = useState(new Date().getSeconds());
@@ -88,6 +89,21 @@ const FlipClock = () => {
 
   const formatTimeUnit = (unit) => (unit < 10 ? `0${unit}` : unit);
 
+// Format time as HH:MM:SS
+const formatTime = (date) => {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  // Format date as Month Day, Year
+  const formatDate = (date) => {
+    return date.toDateString();
+  };
+
   return (
     <View style={styles.container}>
       {/* Clock 1 */}
@@ -105,37 +121,15 @@ const FlipClock = () => {
               <Text style={styles.flipText}>{formatTimeUnit(minutes1)}</Text>
             </Animated.View>
           </View>
-          <Text style={styles.separator}>:</Text>
-          <View style={styles.flipCard}>
-            <Animated.View style={[styles.flipCardFront, { transform: [{ rotateX: flipInterpolate(secondFlipAnim1) }] }]}>
-              <Text style={styles.flipText}>{formatTimeUnit(seconds1)}</Text>
-            </Animated.View>
-          </View>
+          
         </View>
+        
       </View>
 
-      {/* Clock 2 */}
-      <View style={styles.clockContainer}>
-        <Text style={styles.clockLabel}>Clock 2 (Delayed by 2 sec)</Text>
-        <View style={styles.flipCardContainer}>
-          <View style={styles.flipCard}>
-            <Animated.View style={[styles.flipCardFront, { transform: [{ rotateX: flipInterpolate(hourFlipAnim2) }] }]}>
-              <Text style={styles.flipText}>{formatTimeUnit(hours2)}</Text>
-            </Animated.View>
-          </View>
-          <Text style={styles.separator}>:</Text>
-          <View style={styles.flipCard}>
-            <Animated.View style={[styles.flipCardFront, { transform: [{ rotateX: flipInterpolate(minuteFlipAnim2) }] }]}>
-              <Text style={styles.flipText}>{formatTimeUnit(minutes2)}</Text>
-            </Animated.View>
-          </View>
-          <Text style={styles.separator}>:</Text>
-          <View style={styles.flipCard}>
-            <Animated.View style={[styles.flipCardFront, { transform: [{ rotateX: flipInterpolate(secondFlipAnim2) }] }]}>
-              <Text style={styles.flipText}>{formatTimeUnit(seconds2)}</Text>
-            </Animated.View>
-          </View>
-        </View>
+       {/* Display the formatted date and time below the clock */}
+      <View style={styles.timeContainer}>
+        <Text style={styles.dateText}>{formatDate(time)}</Text>
+        <Text style={styles.timeText}>{formatTime(time)}</Text>
       </View>
     </View>
   );
@@ -162,8 +156,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   flipCard: {
-    width: 80,
-    height: 100,
+    width: 160,
+    height: 200,
     backgroundColor: '#333',
     borderRadius: 10,
     overflow: 'hidden',
@@ -178,7 +172,7 @@ const styles = StyleSheet.create({
   },
   flipText: {
     color: '#fff',
-    fontSize: 40,
+    fontSize: 90,
     fontWeight: 'bold',
   },
   separator: {
@@ -186,6 +180,19 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     marginHorizontal: 10,
+  },
+   timeContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  dateText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  timeText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 });
 
